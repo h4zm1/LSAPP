@@ -1,4 +1,7 @@
+import 'dart:developer';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'camera_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -61,6 +64,16 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _gotoCamView() async{
+    log('gotoCamm');
+    final cameras = await availableCameras();
+    final firstCamera = cameras.first;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CameraScreen(camera: firstCamera,)),
+    );//go to other page
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -101,6 +114,14 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
+            ),
+            ElevatedButton(
+              onPressed: _gotoCamView,
+              child: const Text('GOTOCAM'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.yellow),
+                foregroundColor: MaterialStateProperty.all(Colors.black),
+              )
             ),
           ],
         ),
