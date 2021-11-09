@@ -43,5 +43,7 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
     <string>Well, you got to detect objects with something.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Need Gallery Access</string>
 </dict>
 </plist>

@@ -1,6 +1,8 @@
 import 'dart:developer';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+
 import 'camera_screen.dart';
 
 void main() {
@@ -64,14 +66,21 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _gotoCamView() async{
+  void _gotoCamView() async {
     log('gotoCamm');
     final cameras = await availableCameras();
     final firstCamera = cameras.first;
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CameraScreen(camera: firstCamera,)),
-    );//go to other page
+      MaterialPageRoute(
+          builder: (context) => CameraScreen(
+                camera: firstCamera,
+              )),
+      // MaterialPageRoute(
+      //     builder: (context) => const CameraScreen(
+      //           key: null,
+      //         )),
+    ); //go to other page
   }
 
   @override
@@ -116,13 +125,12 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             ElevatedButton(
-              onPressed: _gotoCamView,
-              child: const Text('GOTOCAM'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.yellow),
-                foregroundColor: MaterialStateProperty.all(Colors.black),
-              )
-            ),
+                onPressed: _gotoCamView,
+                child: const Text('GOTOCAM'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.yellow),
+                  foregroundColor: MaterialStateProperty.all(Colors.black),
+                )),
           ],
         ),
       ),
