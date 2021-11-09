@@ -76,10 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context) => CameraScreen(
                 camera: firstCamera,
               )),
-      // MaterialPageRoute(
-      //     builder: (context) => const CameraScreen(
-      //           key: null,
-      //         )),
     ); //go to other page
   }
 

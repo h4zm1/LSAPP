@@ -78,8 +78,8 @@ class TakePicture extends State<CameraScreen> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           //defining scale here cuz .aspectRatio can only be called when initialize is done
-          final scale = 1 / (_controller.value.aspectRatio * MediaQuery.of(context).size.aspectRatio);
           if (snapshot.connectionState == ConnectionState.done) {
+            final scale = 1 / (_controller.value.aspectRatio * MediaQuery.of(context).size.aspectRatio);
             // If the Future is complete, display the preview.
             return Transform.scale(
               scale: scale,
@@ -135,10 +135,17 @@ class DisplayPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
+      // appBar: AppBar(title: const Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
+      ///fullscreen preview
+      body: Image.file(
+        File(imagePath),
+        fit: BoxFit.cover,
+        height: double.infinity,
+        width: double.infinity,
+        alignment: Alignment.center,
+      ),
     );
   }
 }
