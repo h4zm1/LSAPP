@@ -3,6 +3,10 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
+import 'package:lsapp/classifier_quant.dart';
+
+import 'classifier.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({
@@ -37,6 +41,8 @@ Future<void> main() async {
 }
 
 class TakePicture extends State<CameraScreen> {
+  late Classifier _classifier;
+
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   bool isCameraReady = false;
@@ -58,6 +64,8 @@ class TakePicture extends State<CameraScreen> {
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
+    _classifier = ClassifierQuant();
+    log('CLASSIFIERRRRRR INITT');
   }
 
   @override
@@ -111,7 +119,7 @@ class TakePicture extends State<CameraScreen> {
                 builder: (context) => DisplayPictureScreen(
                   // Pass the automatically generated path to
                   // the DisplayPictureScreen widget.
-                  imagePath: image.path,
+                  imagePath: image.path, classifier: _classifier,
                 ),
               ),
             );
@@ -129,11 +137,15 @@ class TakePicture extends State<CameraScreen> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
+  final Classifier classifier;
 
-  const DisplayPictureScreen({Key? key, required this.imagePath}) : super(key: key);
-
+  const DisplayPictureScreen({Key? key, required this.imagePath, required this.classifier}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    File? _image = File(imagePath);
+    img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
+    var pred = classifier.predict(imageInput);
+    log('pprrredddddddd  ' + pred.label.toString());
     return Scaffold(
       // appBar: AppBar(title: const Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`

@@ -21,6 +21,9 @@ abstract class Classifier {
 
   late var _probabilityProcessor;
 
+  final int _labelsLength = 1001;
+  final String _labelsFileName = 'assets/labels.txt';
+
   late List<String> labels;
 
   String get modelName;
@@ -29,12 +32,24 @@ abstract class Classifier {
 
   NormalizeOp get postProcessNormalizeOp;
 
+  Classifier({int? numThreads}) {
+    _interpreterOptions = InterpreterOptions();
+
+    if (numThreads != null) {
+      _interpreterOptions.threads = numThreads;
+    }
+    log('CLASSIFFER CONST');
+    loadModel();
+    loadLabels();
+  }
+
   Future<void> loadModel() async {
     try {
       interpreter = await Interpreter.fromAsset(modelName, options: _interpreterOptions);
       log('Interpreter Created Successfully');
-      _outputShape = interpreter.getInputTensor(0).shape;
-      _inputShape = interpreter.getOutputTensor(0).shape;
+
+      _inputShape = interpreter.getInputTensor(0).shape;
+      _outputShape = interpreter.getOutputTensor(0).shape;
       _inputType = interpreter.getInputTensor(0).type;
       _outputType = interpreter.getOutputTensor(0).type;
 
@@ -42,6 +57,15 @@ abstract class Classifier {
       _probabilityProcessor = TensorProcessorBuilder().add(postProcessNormalizeOp).build();
     } catch (e) {
       log('Unable to create interpreter, Caught Exception: ${e.toString()}');
+    }
+  }
+
+  Future<void> loadLabels() async {
+    labels = await FileUtil.loadLabels(_labelsFileName);
+    if (labels.length == _labelsLength) {
+      log('Labels loaded successfully');
+    } else {
+      log('Unable to load labels');
     }
   }
 
