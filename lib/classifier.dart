@@ -1,118 +1,178 @@
 import 'dart:developer';
 import 'dart:math' as math;
+import 'dart:ui';
 
-import 'package:collection/collection.dart';
 import 'package:image/image.dart';
+import 'package:lsapp/recognition.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
-abstract class Classifier {
-  late Interpreter interpreter;
+class Classifier {
+  late Interpreter _interpreter;
+
   late InterpreterOptions _interpreterOptions;
 
-  late List<int> _inputShape;
-  late List<int> _outputShape;
+  late int padSize;
 
-  late TensorImage _inputImage;
-  late TensorBuffer _outputBuffer;
+  static const String MODEL_FILE_NAME = "detect.tflite";
+  static const String LABEL_FILE_NAME = "labelmap.txt";
 
-  late TfLiteType _inputType;
-  late TfLiteType _outputType;
+  /// Result score threshold
+  static const double THRESHOLD = 0.5;
 
-  late var _probabilityProcessor;
+  /// Shapes of output tensors
+  late List<List<int>> _outputShapes;
 
-  final int _labelsLength = 1001;
-  final String _labelsFileName = 'assets/labels.txt';
+  /// Labels file loaded as list
+  List<String>? _labels;
 
-  late List<String> labels;
+  /// Types of output tensors
+  late List<TfLiteType> _outputTypes;
 
-  String get modelName;
+  /// Number of results to show
+  static const int NUM_RESULTS = 10;
 
-  NormalizeOp get preProcessNormalizeOp;
+  ImageProcessor? imageProcessor;
 
-  NormalizeOp get postProcessNormalizeOp;
+  /// Input size of image (height = width = 300)
+  static const int INPUT_SIZE = 300;
 
-  Classifier({int? numThreads}) {
-    _interpreterOptions = InterpreterOptions();
-
-    if (numThreads != null) {
-      _interpreterOptions.threads = numThreads;
-    }
-    log('CLASSIFFER CONST');
-    loadModel();
-    loadLabels();
+  Classifier({
+    Interpreter? interpreter,
+    List<String>? labels,
+  }) {
+    loadModel(interpreter: interpreter);
+    loadLabels(labels: labels);
   }
-
-  Future<void> loadModel() async {
+  // / Loads interpreter from asset
+  void loadModel({Interpreter? interpreter}) async {
     try {
-      interpreter = await Interpreter.fromAsset(modelName, options: _interpreterOptions);
-      log('Interpreter Created Successfully');
-
-      _inputShape = interpreter.getInputTensor(0).shape;
-      _outputShape = interpreter.getOutputTensor(0).shape;
-      _inputType = interpreter.getInputTensor(0).type;
-      _outputType = interpreter.getOutputTensor(0).type;
-
-      _outputBuffer = TensorBuffer.createFixedSize(_outputShape, _outputType);
-      _probabilityProcessor = TensorProcessorBuilder().add(postProcessNormalizeOp).build();
+      _interpreter = interpreter ??
+          await Interpreter.fromAsset(
+            MODEL_FILE_NAME,
+            options: InterpreterOptions()..threads = 4,
+          );
+      var outputTensors = _interpreter.getOutputTensors();
+      _outputShapes = [];
+      _outputTypes = [];
+      for (var tensor in outputTensors) {
+        log('for each ' + tensor.name);
+        _outputShapes.add(tensor.shape);
+        _outputTypes.add(tensor.type);
+      }
     } catch (e) {
-      log('Unable to create interpreter, Caught Exception: ${e.toString()}');
+      log("Error while creating interpreter: $e");
     }
   }
 
-  Future<void> loadLabels() async {
-    labels = await FileUtil.loadLabels(_labelsFileName);
-    if (labels.length == _labelsLength) {
-      log('Labels loaded successfully');
-    } else {
-      log('Unable to load labels');
+  /// Loads labels from assets
+  void loadLabels({List<String>? labels}) async {
+    try {
+      _labels = labels ?? await FileUtil.loadLabels("assets/" + LABEL_FILE_NAME);
+    } catch (e) {
+      log("Error while loading labels: $e");
     }
   }
 
-  TensorImage _preProcess() {
-    int cropSize = math.min(_inputImage.height, _inputImage.width);
-    return ImageProcessorBuilder().add(ResizeWithCropOrPadOp(cropSize, cropSize)).add(ResizeOp(_inputShape[1], _inputShape[2], ResizeMethod.NEAREST_NEIGHBOUR)).add(preProcessNormalizeOp).build().process(_inputImage);
-  }
-
-  Category predict(Image image) {
-    final pres = DateTime.now().millisecondsSinceEpoch;
-    _inputImage = TensorImage(_inputType);
-    _inputImage.loadImage(image);
-    _inputImage = _preProcess();
-    final pre = DateTime.now().millisecondsSinceEpoch - pres;
-
-    log('Time to load image: $pre ms');
-
-    final runs = DateTime.now().millisecondsSinceEpoch;
-    interpreter.run(_inputImage.buffer, _outputBuffer.getBuffer());
-    final run = DateTime.now().millisecondsSinceEpoch - runs;
-
-    log('Time to run inference: $run ms');
-
-    Map<String, double> labeledProb = TensorLabel.fromList(labels, _probabilityProcessor.process(_outputBuffer)).getMapWithFloatValue();
-    final pred = getTopProbability(labeledProb);
-
-    return Category(pred.key, pred.value);
-  }
-
-  void close() {
-    interpreter.close();
-  }
-
-  MapEntry<String, double> getTopProbability(Map<String, double> labeledProb) {
-    var pq = PriorityQueue<MapEntry<String, double>>(compare);
-    pq.addAll(labeledProb.entries);
-
-    return pq.first;
-  }
-
-  int compare(MapEntry<String, double> e1, MapEntry<String, double> e2) {
-    if (e1.value > e2.value) {
-      return -1;
-    } else if (e1.value == e2.value) {
-      return 0;
-    } else {
-      return 1;
+  TensorImage getProcessedImage(TensorImage inputImage) {
+    padSize = math.max(inputImage.height, inputImage.width);
+    if (imageProcessor == null) {
+      imageProcessor = ImageProcessorBuilder().add(ResizeWithCropOrPadOp(padSize, padSize)).add(ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeMethod.BILINEAR)).build();
     }
+    inputImage = imageProcessor!.process(inputImage);
+    return inputImage;
   }
+
+  Map<String, dynamic>? predict(Image image) {
+    var predictStartTime = DateTime.now().millisecondsSinceEpoch;
+
+    if (_interpreter == null) {
+      log("Interpreter not initialized");
+      return null;
+    }
+
+    var preProcessStart = DateTime.now().millisecondsSinceEpoch;
+
+    // Create TensorImage from image
+    TensorImage inputImage = TensorImage.fromImage(image);
+
+    // Pre-process TensorImage
+    inputImage = getProcessedImage(inputImage);
+
+    var preProcessElapsedTime = DateTime.now().millisecondsSinceEpoch - preProcessStart;
+
+    // TensorBuffers for output tensors
+    TensorBuffer outputLocations = TensorBufferFloat(_outputShapes[0]);
+    TensorBuffer outputClasses = TensorBufferFloat(_outputShapes[1]);
+    TensorBuffer outputScores = TensorBufferFloat(_outputShapes[2]);
+    TensorBuffer numLocations = TensorBufferFloat(_outputShapes[3]);
+
+    // Inputs object for runForMultipleInputs
+    // Use [TensorImage.buffer] or [TensorBuffer.buffer] to pass by reference
+    List<Object> inputs = [inputImage.buffer];
+
+    // Outputs map
+    Map<int, Object> outputs = {
+      0: outputLocations.buffer,
+      1: outputClasses.buffer,
+      2: outputScores.buffer,
+      3: numLocations.buffer,
+    };
+
+    var inferenceTimeStart = DateTime.now().millisecondsSinceEpoch;
+
+    // run inference
+    _interpreter.runForMultipleInputs(inputs, outputs);
+
+    var inferenceTimeElapsed = DateTime.now().millisecondsSinceEpoch - inferenceTimeStart;
+
+    // Maximum number of results to show
+    int resultsCount = math.min(NUM_RESULTS, numLocations.getIntValue(0));
+
+    // Using labelOffset = 1 as ??? at index 0
+    int labelOffset = 1;
+
+    // Using bounding box utils for easy conversion of tensorbuffer to List<Rect>
+    List<Rect> locations = BoundingBoxUtils.convert(
+      tensor: outputLocations,
+      valueIndex: [1, 0, 3, 2],
+      boundingBoxAxis: 2,
+      boundingBoxType: BoundingBoxType.BOUNDARIES,
+      coordinateType: CoordinateType.RATIO,
+      height: INPUT_SIZE,
+      width: INPUT_SIZE,
+    );
+
+    List<Recognition> recognitions = [];
+
+    for (int i = 0; i < resultsCount; i++) {
+      // Prediction score
+      var score = outputScores.getDoubleValue(i);
+
+      // Label string
+      var labelIndex = outputClasses.getIntValue(i) + labelOffset;
+      var label = labels!.elementAt(labelIndex);
+
+      if (score > THRESHOLD) {
+        // inverse of rect
+        // [locations] corresponds to the image size 300 X 300
+        // inverseTransformRect transforms it our [inputImage]
+        Rect transformedRect = imageProcessor!.inverseTransformRect(locations[i], image.height, image.width);
+
+        recognitions.add(
+          Recognition(i, label, score, transformedRect),
+        );
+        log('i ' + i.toString() + ' label ' + label + ' score ' + score.toString() + ' trans ' + transformedRect.toString());
+      } else {}
+    }
+
+    var predictElapsedTime = DateTime.now().millisecondsSinceEpoch - predictStartTime;
+
+    return {"recognitions": recognitions, "stats": predictElapsedTime, "inferenceTime": inferenceTimeElapsed, "preProcessingTime": preProcessElapsedTime};
+  }
+
+  /// Gets the interpreter instance
+  Interpreter get interpreter => _interpreter;
+//   /// Gets the loaded labels
+  List<String>? get labels => _labels;
 }

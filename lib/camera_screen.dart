@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
-import 'package:lsapp/classifier_quant.dart';
 
 import 'classifier.dart';
 
@@ -64,8 +63,10 @@ class TakePicture extends State<CameraScreen> {
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
-    _classifier = ClassifierQuant();
-    log('CLASSIFIERRRRRR INITT');
+    // _classifier = ClassifierQuant();
+    // Create an instance of classifier to load model and labels
+    _classifier = Classifier();
+    log('CLASSIFIER INITT');
   }
 
   @override
@@ -144,8 +145,9 @@ class DisplayPictureScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     File? _image = File(imagePath);
     img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
-    var pred = classifier.predict(imageInput);
-    log('pprrredddddddd  ' + pred.label.toString());
+    // var pred = classifier.predict(imageInput);
+    Map<String, dynamic>? results = classifier.predict(imageInput);
+    log(results!["recognitions"].toString());
     return Scaffold(
       // appBar: AppBar(title: const Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`
