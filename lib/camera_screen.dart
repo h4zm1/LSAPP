@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
+import 'package:lsapp/recognition.dart';
 
+import 'box_widget.dart';
 import 'classifier.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class CameraScreen extends StatefulWidget {
     required this.camera,
   }) : super(key: key);
   final CameraDescription camera;
+
   @override
   TakePicture createState() => TakePicture();
 }
@@ -141,25 +144,45 @@ class DisplayPictureScreen extends StatelessWidget {
   final Classifier classifier;
 
   const DisplayPictureScreen({Key? key, required this.imagePath, required this.classifier}) : super(key: key);
+
+  /// Returns Stack of bounding boxes
+  Widget boundingBoxes(List<Recognition> results) {
+    if (results == null) {
+      return Container();
+    }
+    return Stack(
+      children: results
+          .map((e) => BoxWidget(
+                result: e,
+              ))
+          .toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     File? _image = File(imagePath);
+
     img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
+    var color = const Color(0xFF0099FF);
     // var pred = classifier.predict(imageInput);
     Map<String, dynamic>? results = classifier.predict(imageInput);
-    log(results!["recognitions"].toString());
+
+    // log(results!["recognitions"].toString());
+    List<Recognition> pos = results!["recognitions"];
+
     return Scaffold(
-      // appBar: AppBar(title: const Text('Display the Picture')),
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
-      ///fullscreen preview
-      body: Image.file(
-        File(imagePath),
-        fit: BoxFit.cover,
-        height: double.infinity,
-        width: double.infinity,
-        alignment: Alignment.center,
-      ),
-    );
+        body: Stack(
+      children: <Widget>[
+        Image.file(
+          File(imagePath),
+          fit: BoxFit.cover,
+          height: double.infinity,
+          width: double.infinity,
+          alignment: Alignment.center,
+        ),
+        boundingBoxes(pos),
+      ],
+    ));
   }
 }
