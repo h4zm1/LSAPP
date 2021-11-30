@@ -20,7 +20,8 @@ class Recognition {
   /// passed for inference
   Rect _location;
 
-  Recognition(this._id, this._label, this._score, this._location);
+  BuildContext context;
+  Recognition(this._id, this._label, this._score, this._location, this.context);
 
   int get id => _id;
 
@@ -38,9 +39,10 @@ class Recognition {
   Rect get renderLocation {
     // ratioX = screenWidth / imageInputWidth
     // ratioY = ratioX if image fits screenWidth with aspectRatio = constant
-
     // double ratioX = CameraViewSingleton.ratio;
-    double ratioX = location.width / location.height;
+    // Size screenSize = MediaQuery.of(context).size;
+    // double ratioX = screenSize.width / screenSize.height;
+    double ratioX = (location.width / location.height);
     Size actualPreviewSize = Size(location.width, location.width * ratioX);
     double ratioY = ratioX;
 

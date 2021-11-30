@@ -70,7 +70,10 @@ flutter:
   assets:
      - assets/labelmap.txt
      - assets/detect.tflite
-
+     - assets/labels.txt
+     - assets/mobilenet.tflite
+     - assets/labelmap3.txt
+     - assets/lite-model3.tflite
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

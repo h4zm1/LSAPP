@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:image/image.dart';
 import 'package:lsapp/recognition.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
@@ -16,6 +17,10 @@ class Classifier {
 
   static const String MODEL_FILE_NAME = "detect.tflite";
   static const String LABEL_FILE_NAME = "labelmap.txt";
+  // static const String MODEL_FILE_NAME = "mobilenet.tflite";
+  // static const String LABEL_FILE_NAME = "labels.txt";
+  // static const String MODEL_FILE_NAME = "lite-model3.tflite";
+  // static const String LABEL_FILE_NAME = "labelmap3.txt";
 
   /// Result score threshold
   static const double THRESHOLD = 0.5;
@@ -76,14 +81,12 @@ class Classifier {
 
   TensorImage getProcessedImage(TensorImage inputImage) {
     padSize = math.max(inputImage.height, inputImage.width);
-    if (imageProcessor == null) {
-      imageProcessor = ImageProcessorBuilder().add(ResizeWithCropOrPadOp(padSize, padSize)).add(ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeMethod.BILINEAR)).build();
-    }
+    imageProcessor ??= ImageProcessorBuilder().add(ResizeWithCropOrPadOp(padSize, padSize)).add(ResizeOp(INPUT_SIZE, INPUT_SIZE, ResizeMethod.BILINEAR)).build();
     inputImage = imageProcessor!.process(inputImage);
     return inputImage;
   }
 
-  Map<String, dynamic>? predict(Image image) {
+  Map<String, dynamic>? predict(Image image, BuildContext context) {
     var predictStartTime = DateTime.now().millisecondsSinceEpoch;
 
     if (_interpreter == null) {
@@ -141,6 +144,7 @@ class Classifier {
       coordinateType: CoordinateType.RATIO,
       height: INPUT_SIZE,
       width: INPUT_SIZE,
+      // width: INPUT_SIZE,
     );
 
     List<Recognition> recognitions = [];
@@ -152,23 +156,41 @@ class Classifier {
       // Label string
       var labelIndex = outputClasses.getIntValue(i) + labelOffset;
       var label = labels!.elementAt(labelIndex);
-
+      bool exist = false; //for testing existence
       if (score > THRESHOLD) {
         // inverse of rect
         // [locations] corresponds to the image size 300 X 300
         // inverseTransformRect transforms it our [inputImage]
         Rect transformedRect = imageProcessor!.inverseTransformRect(locations[i], image.height, image.width);
 
-        recognitions.add(
-          Recognition(i, label, score, transformedRect),
-        );
+        //avoid having multiple boxes for one object
+        //todo: pick the one with highest score
+        if (recognitions.isEmpty) {
+          recognitions.add(
+            Recognition(i, label, score, transformedRect, context),
+          );
+        } else {
+          for (int j = 0; j < recognitions.length; j++) {
+            if (recognitions[j].label == label) {
+              exist = true;
+            } else {
+              break;
+            }
+          }
+        }
+        if (exist == false) {
+          recognitions.add(
+            Recognition(i, label, score, transformedRect, context),
+          );
+        }
+
         log('i ' + i.toString() + ' label ' + label + ' score ' + score.toString() + ' trans ' + transformedRect.toString());
       } else {}
     }
 
     var predictElapsedTime = DateTime.now().millisecondsSinceEpoch - predictStartTime;
 
-    return {"recognitions": recognitions, "stats": predictElapsedTime, "inferenceTime": inferenceTimeElapsed, "preProcessingTime": preProcessElapsedTime};
+    return {"recognitions": recognitions, "stats": predictElapsedTime, "inferenceTime": inferenceTimeElapsed, "preProcessingTime": preProcessElapsedTime, "inputImage": inputImage};
   }
 
   /// Gets the interpreter instance

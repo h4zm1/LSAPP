@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -166,14 +167,14 @@ class DisplayPictureScreen extends StatelessWidget {
     img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
     var color = const Color(0xFF0099FF);
     // var pred = classifier.predict(imageInput);
-    Map<String, dynamic>? results = classifier.predict(imageInput);
-
+    Map<String, dynamic>? results = classifier.predict(imageInput, context);
     // log(results!["recognitions"].toString());
     List<Recognition> pos = results!["recognitions"];
 
     return Scaffold(
         body: Stack(
       children: <Widget>[
+        // tes,
         Image.file(
           File(imagePath),
           fit: BoxFit.cover,

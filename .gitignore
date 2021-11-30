@@ -234,3 +234,14 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/flutter,dart,androidstudio
+assets/labelmap2\.txt
+
+assets/labelmap3\.txt
+
+assets/labels\.txt
+
+assets/lite-model\.tflite
+
+assets/lite-model3\.tflite
+
+assets/mobilenet\.tflite
