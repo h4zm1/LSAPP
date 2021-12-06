@@ -4,9 +4,10 @@ import 'dart:ui';
 
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:image/image.dart';
-import 'package:lsapp/recognition.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
+
+import 'recognition.dart';
 
 class Classifier {
   late Interpreter _interpreter;
@@ -23,7 +24,7 @@ class Classifier {
   // static const String LABEL_FILE_NAME = "labelmap3.txt";
 
   /// Result score threshold
-  static const double THRESHOLD = 0.5;
+  static const double THRESHOLD = 0.6;
 
   /// Shapes of output tensors
   late List<List<int>> _outputShapes;
@@ -169,11 +170,15 @@ class Classifier {
           recognitions.add(
             Recognition(i, label, score, transformedRect, context),
           );
+          exist = true; //to avoid triggering "if (exist == false)" bellow
         } else {
           for (int j = 0; j < recognitions.length; j++) {
             if (recognitions[j].label == label) {
+              //there's an object with the same label already exists
               exist = true;
             } else {
+              //this won't only break from this loop but
+              //the outside loop too, so if this break, the log bellow won't run
               break;
             }
           }

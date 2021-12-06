@@ -1,7 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:lsapp/recognition.dart';
+
+import 'recognition.dart';
 
 /// Individual bounding box
 class BoxWidget extends StatelessWidget {
