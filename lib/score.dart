@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'first.dart';
+
 class Scor extends StatefulWidget {
   int totalScore = 0;
   Scor(this.totalScore);
@@ -34,48 +36,46 @@ class _ScorState extends State<Scor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'QUIZ TIME',
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-      ),
       body: Stack(
         children: <Widget>[
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("lib/images/background.png"),
+                image: AssetImage("lib/images/score.png"),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          Column(
-            children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 10.0, left: 114.0, right: 50.0, top: 530.0),
+            padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
+            //padding: EdgeInsets.all(20.0),
+            child: Text(
+              '${widget.totalScore.toString()}/${3}',
+              style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold),
+            ),
+          ),
+          InkWell(
+            child: Stack(children: [
               Container(
-                padding: EdgeInsets.all(20.0),
-                child: Text(
-                  '${widget.totalScore.toString()}/${_questions.length}',
-                  style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Container(
-                height: 100,
+                height: 90,
                 width: double.infinity,
-                color: Colors.white,
-                child: Center(
-                  child: Text(
-                    widget.totalScore > 0 ? 'Congratulations! Your final score is: ${widget.totalScore}' : 'Your final score is: ${widget.totalScore}. Better luck next time!',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: widget.totalScore > 4 ? Colors.green : Colors.red,
-                    ),
+                margin: EdgeInsets.only(bottom: 10.0, left: 47.0, right: 50.0, top: 600.0),
+                padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("lib/images/home_button.png"),
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
-            ],
+            ]),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => First()),
+              );
+            },
           ),
         ],
       ),
@@ -101,3 +101,13 @@ final _questions = const [
     ],
   },
 ];
+/*   child: Text(
+                widget.totalScore > 0
+                    ? 'Congratulations! Your final score is: ${widget.totalScore}'
+                    : 'Your final score is: ${widget.totalScore}. Better luck next time!',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: widget.totalScore > 4 ? Colors.green : Colors.red,
+                ),
+              ), */

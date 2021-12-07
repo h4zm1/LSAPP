@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lsapp/score.dart';
 
 import 'answer.dart';
-import 'score.dart';
 
 class English extends StatefulWidget {
   @override
@@ -75,19 +75,12 @@ class _EnglishState extends State<English> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'QUIZ TIME',
-          style: TextStyle(color: Colors.white),
-        ),
-        centerTitle: true,
-      ),
       body: Stack(
         children: <Widget>[
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("lib/images/background.png"),
+                image: AssetImage("lib/images/quiz_b.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -97,7 +90,7 @@ class _EnglishState extends State<English> {
               Row(
                 children: [
                   SizedBox(
-                    height: 100.0,
+                    height: 190.0,
                   ),
                 ],
               ),
@@ -107,11 +100,11 @@ class _EnglishState extends State<English> {
                 margin: EdgeInsets.only(bottom: 10.0, left: 30.0, right: 30.0),
                 padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
                 decoration: BoxDecoration(
-                  color: Colors.deepOrange,
+                  color: Colors.brown[50],
                   borderRadius: BorderRadius.circular(10.0),
                   image: DecorationImage(
                     image: AssetImage(_questions[_questionIndex]['image'].toString()),
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -122,22 +115,21 @@ class _EnglishState extends State<English> {
                       ? answer['score'] != null
                           ? Colors.green
                           : Colors.red
-                      : null,
+                      : Colors.white,
                   answerTap: () {
                     // if answer was already selected then nothing happens onTap
                     if (answerWasSelected) {
                       return;
                     }
                     //answer is being selected
-                    // _questionAnswered(answer['score']);
                     _questionAnswered(true);
                   },
                 ),
               ),
               SizedBox(height: 50.0),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 40.0),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.lightBlue[800]),
                 ),
                 onPressed: () {
                   if (!answerWasSelected) {
@@ -158,7 +150,7 @@ class _EnglishState extends State<English> {
   }
 }
 
-final _questions = [
+final _questions = const [
   {
     'question': 'pen',
     'image': "lib/images/pen.png",

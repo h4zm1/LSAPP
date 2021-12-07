@@ -2,11 +2,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:lsapp/quiz.dart';
+import 'package:lsapp/score_holder.dart';
 
 import 'DB/dbhelper.dart';
 import 'DB/picture.dart';
 import 'first.dart';
-import 'french.dart';
+import 'quiz_menu.dart';
 
 class QuizLanguageChoice extends StatelessWidget {
   const QuizLanguageChoice({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class QuizLanguageChoice extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("lib/images/background.png"),
+                image: AssetImage("lib/images/quiz_menu_L.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -27,175 +28,88 @@ class QuizLanguageChoice extends StatelessWidget {
           Column(
             children: <Widget>[
               Container(
-                margin: const EdgeInsets.only(top: 150),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      // margin: const EdgeInsets.only(left: 20 ),
-                      width: MediaQuery.of(context).size.width,
-                      height: 110,
-                      decoration: const BoxDecoration(color: Color.fromRGBO(69, 134, 201, 1)),
-                    ),
-                    const Positioned(
-                      top: 30,
-                      left: 160,
-                      // ignore: prefer_const_constructors
-                      child: Text("Quiz",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 60,
-                            fontFamily: "Roboto",
-                            fontWeight: FontWeight.w800,
-                          )),
-                    ),
-                    Positioned(
-                      top: -120,
-                      child: Container(
-                        width: 200,
-                        height: 200,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('lib/images/clock_menu.png'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+                margin: const EdgeInsets.only(right: 15, left: 15, top: 277),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("lib/images/english.png"),
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(right: 15, left: 15, top: 35),
                 child: Column(
                   children: <Widget>[
                     InkWell(
                       child: Stack(children: [
                         Container(
-                          height: 90,
+                          height: 60,
+                          width: 130,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                offset: const Offset(0, 3), // changes position of shadow
-                              ),
-                            ],
                           ),
-                        ),
-                        const Positioned(
-                          top: 5,
-                          left: 5,
-                          child: CircleAvatar(
-                            radius: 40.0,
-                            backgroundImage: AssetImage('lib/images/england_flag.png'),
-                          ),
-                        ),
-                        const Positioned(
-                          top: 27,
-                          left: 150,
-                          child: Text("English",
-                              style: TextStyle(
-                                color: Color.fromRGBO(4, 18, 92, 1),
-                                fontSize: 25,
-                                fontFamily: "Roboto",
-                                fontWeight: FontWeight.w700,
-                              )),
                         ),
                       ]),
                       onTap: () {
                         _testPreview(context);
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => const QuizMenu()),
-                        // );
                       },
                     ),
-                    const SizedBox(
-                      height: 35,
-                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(right: 15, left: 15, top: 47),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("lib/images/french.png"),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                child: Column(
+                  children: <Widget>[
                     InkWell(
                       child: Stack(children: [
                         Container(
-                          height: 90,
+                          height: 60,
+                          width: 130,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                offset: const Offset(0, 3), // changes position of shadow
-                              ),
-                            ],
                           ),
-                        ),
-                        const Positioned(
-                          top: 5,
-                          left: 5,
-                          child: CircleAvatar(
-                            radius: 40.0,
-                            backgroundImage: AssetImage('lib/images/frensh_flag.png'),
-                          ),
-                        ),
-                        const Positioned(
-                          top: 27,
-                          left: 150,
-                          child: Text("French",
-                              style: TextStyle(
-                                color: Color.fromRGBO(4, 18, 92, 1),
-                                fontSize: 25,
-                                fontFamily: "Roboto",
-                                fontWeight: FontWeight.w700,
-                              )),
                         ),
                       ]),
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => French()),
+                          MaterialPageRoute(builder: (context) => const QuizMenu()),
                         );
                       },
                     ),
-                    const SizedBox(
-                      height: 35,
-                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(right: 15, left: 15, top: 35),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("lib/images/arabic.png"),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                child: Column(
+                  children: <Widget>[
                     InkWell(
                       child: Stack(children: [
                         Container(
-                          height: 90,
+                          height: 60,
+                          width: 130,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                offset: const Offset(0, 3), // changes position of shadow
-                              ),
-                            ],
                           ),
-                        ),
-                        const Positioned(
-                          top: 5,
-                          left: 5,
-                          child: CircleAvatar(
-                            radius: 40.0,
-                            backgroundImage: AssetImage('lib/images/arabic_flag.png'),
-                          ),
-                        ),
-                        const Positioned(
-                          top: 27,
-                          left: 150,
-                          child: Text("Arabic",
-                              style: TextStyle(
-                                color: Color.fromRGBO(4, 18, 92, 1),
-                                fontSize: 25,
-                                fontFamily: "Roboto",
-                                fontWeight: FontWeight.w700,
-                              )),
                         ),
                       ]),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const QuizMenu()),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -231,6 +145,7 @@ class QuizLanguageChoice extends StatelessWidget {
   }
 
   void _testPreview(BuildContext context) async {
+    scoreHolder.currentScore = 0;
     var dbHelper = DBHelper();
     Future<List<Picture>> listPics = dbHelper.getPictures();
     List<Picture> awaitList = await listPics;

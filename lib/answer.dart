@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lsapp/score_holder.dart';
 
 class Answer extends StatefulWidget {
   final String? answerText;
@@ -23,12 +24,16 @@ class _answer extends State<Answer> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: widget.answerTap,
-      // onTap: () => setState(() {
-      //   click = !click;
-      // }),
+      onTap: !click ? widget.answerTap : null,
       onTapDown: (TapDownDetails details) {
         setState(() {
+          if (scoreHolder.block == false) {
+            //if not blocked
+            if (widget.valid == true) {
+              scoreHolder.currentScore = scoreHolder.currentScore + 1;
+            }
+            scoreHolder.block = true; //block after finishing
+          }
           click = !click;
         });
       },
