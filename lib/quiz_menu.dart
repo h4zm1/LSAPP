@@ -1,6 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
-import 'english.dart';
+import 'package:flutter/material.dart';
+import 'package:lsapp/quiz.dart';
+
+import 'DB/dbhelper.dart';
+import 'DB/picture.dart';
 import 'quiz_language_choice.dart';
 
 class QuizMenu extends StatelessWidget {
@@ -108,10 +112,12 @@ class QuizMenu extends StatelessWidget {
                           ),
                         ]),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => English()),
-                          );
+                          _testPreview(context);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => Quiz()),
+                          //   // MaterialPageRoute(builder: (context) => English()),
+                          // );
                         },
                       ),
                       const SizedBox(
@@ -270,6 +276,21 @@ class QuizMenu extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  void _testPreview(BuildContext context) async {
+    var dbHelper = DBHelper();
+    Future<List<Picture>> listPics = dbHelper.getPictures();
+    List<Picture> awaitList = await listPics;
+
+    Uint8List file = awaitList[1].pic;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Quiz(
+          awaitList: awaitList,
+        ),
       ),
     );
   }

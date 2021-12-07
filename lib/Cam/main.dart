@@ -110,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // File file = awaitList[0].pic;
     // DisplayPictureScreen(img: im);
     // File file = File.fromRawPath(awaitList[0].pic);
-    Uint8List file = awaitList[0].pic;
+    Uint8List file = awaitList[1].pic;
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => DisplayPictureScreen(
