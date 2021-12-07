@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:lsapp/answer.dart';
+import 'package:lsapp/quiz_language_choice.dart';
 
 import 'DB/picture.dart';
 
@@ -19,7 +20,7 @@ class Quiz extends StatelessWidget {
     required this.awaitList,
   }) : super(key: key);
 
-  void randQuiz() {
+  void randQuiz(BuildContext context) {
     bool exist = false;
     if (track!.isEmpty) {
       int random = getRandom(awaitList.length);
@@ -32,6 +33,10 @@ class Quiz extends StatelessWidget {
         String temp = awaitList[random].name;
         if (track!.contains(temp)) {
           exist = true;
+          if (track!.length == awaitList.length) {
+            break;
+            //   Navigator.push(context, MaterialPageRoute(builder: (context) => const QuizLanguageChoice()));
+          }
         } else {
           exist = false;
           file = awaitList[random].pic;
@@ -44,7 +49,7 @@ class Quiz extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    randQuiz();
+    randQuiz(context);
     log("real**** " + real!);
     getFakes(real!);
 
@@ -92,6 +97,9 @@ class Quiz extends StatelessWidget {
               log("1");
               Navigator.push(context, new MaterialPageRoute(builder: (context) => this.build(context)));
               options!.clear();
+              if (track!.length == awaitList.length) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const QuizLanguageChoice()));
+              }
             },
           ),
           Answer(
@@ -102,6 +110,9 @@ class Quiz extends StatelessWidget {
               log("2");
               Navigator.push(context, new MaterialPageRoute(builder: (context) => this.build(context)));
               options!.clear();
+              if (track!.length == awaitList.length) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const QuizLanguageChoice()));
+              }
             },
           ),
           Answer(
@@ -111,6 +122,9 @@ class Quiz extends StatelessWidget {
               log("3");
               Navigator.push(context, new MaterialPageRoute(builder: (context) => this.build(context)));
               options!.clear();
+              if (track!.length == awaitList.length) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const QuizLanguageChoice()));
+              }
             },
           )
         ]),
