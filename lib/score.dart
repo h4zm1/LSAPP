@@ -101,13 +101,3 @@ final _questions = const [
     ],
   },
 ];
-/*   child: Text(
-                widget.totalScore > 0
-                    ? 'Congratulations! Your final score is: ${widget.totalScore}'
-                    : 'Your final score is: ${widget.totalScore}. Better luck next time!',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: widget.totalScore > 4 ? Colors.green : Colors.red,
-                ),
-              ), */

@@ -47,12 +47,8 @@ class BoxWidget extends StatelessWidget {
                       textScaleFactor: 3.5,
                     ),
                     color: color,
-                    // offset: Offset((result.renderLocation.top) / 2, 55),
                     offset: const Offset(-3, 57),
 
-                    // offset: const Offset(-15, 55),
-                    // elevation: 1,
-                    // shape: OutlineInputBorder(borderSide: BorderSide(color: color, width: 2)),
                     onSelected: (value) {
                       log("value:$value");
                     },

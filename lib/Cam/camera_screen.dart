@@ -73,7 +73,6 @@ class TakePicture extends State<CameraScreen> {
     // _classifier = ClassifierQuant();
     // Create an instance of classifier to load model and labels
     _classifier = Classifier();
-    log('CLASSIFIER INITT');
   }
 
   @override
@@ -128,7 +127,6 @@ class TakePicture extends State<CameraScreen> {
                   // Pass the automatically generated path to
                   // the DisplayPictureScreen widget.
                   imagePath: image.path, classifier: _classifier,
-                  // imagePath: image.readAsBytes(), classifier: _classifier,
                 ),
               ),
             );
@@ -154,7 +152,6 @@ class TakePicture extends State<CameraScreen> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
-  // final Future<Uint8List> imagePath;
   final Classifier classifier;
 
   const DisplayPictureScreen({Key? key, required this.imagePath, required this.classifier}) : super(key: key);
@@ -177,32 +174,21 @@ class DisplayPictureScreen extends StatelessWidget {
     Picture pic = Picture(label, im);
     var dbHelper = DBHelper();
     dbHelper.savePicture(pic);
-    log("🌋🌋🌋🌋 Data saved Successfully");
   }
 
   @override
   Widget build(BuildContext context) {
     File? _image = File(imagePath);
-    // Uint8List u8 = _image.readAsBytesSync();
-    log("🟢🟢🟢🟢 display builder");
     img.Image imageInput = img.decodeImage(_image.readAsBytesSync())!;
-    // final imageInput =  bytesToImage(imagePath);
-    // Image imm = Image.file(_image);
-    // push2DB("aaaaaaa", _image.readAsBytesSync());
-    // Image im1 = I
-    // var color = const Color(0xFF0099FF);
-    // var pred = classifier.predict(imageInput);
+
     Map<String, dynamic>? results = classifier.predict(imageInput, context);
-    // log(results!["recognitions"].toString());
     List<Recognition> pos = results!["recognitions"];
     for (Recognition rec in pos) {
       push2DB(rec.label, _image.readAsBytesSync());
-      log("laaaab " + rec.label);
     }
     return Scaffold(
         body: Stack(
       children: <Widget>[
-        // imm,
         Image.file(
           File(imagePath),
           fit: BoxFit.cover,

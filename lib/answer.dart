@@ -15,11 +15,8 @@ class Answer extends StatefulWidget {
 class _answer extends State<Answer> {
   int x = 1;
   bool click = false;
-  // final String? answerText;
-  // final Color? answerColor;
-  // final Function()? answerTap;
 
-  // _answer({this.answerText, this.answerColor, this.answerTap});
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +39,6 @@ class _answer extends State<Answer> {
         margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 30.0),
         width: double.infinity,
         decoration: BoxDecoration(
-          // color: widget.answerColor,
-          // color: _flag ? Colors.red : Colors.teal,
           color: (click == false)
               ? Colors.white70
               : ((widget.valid == true))
