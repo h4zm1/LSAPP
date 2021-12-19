@@ -86,7 +86,6 @@ class Quiz extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // SizedBox(height: 80),
               Image.memory(
                 file!,
                 fit: BoxFit.cover,
@@ -106,7 +105,6 @@ class Quiz extends StatelessWidget {
           ),
           Answer(
             answerText: options![1],
-            // answerColor: Changer.color,
             valid: ((options![1] == real)) ? true : false,
             answerTap: () {
               log("2");
@@ -125,23 +123,13 @@ class Quiz extends StatelessWidget {
               backgroundColor: MaterialStateProperty.all(Colors.lightBlue[800]),
             ),
             onPressed: () {
-              log("SCORRREEE  " + scoreHolder.currentScore.toString());
               Navigator.push(context, new MaterialPageRoute(builder: (context) => this.build(context)));
               options!.clear();
               if (track!.length == 3) {
-                // log("SCORRREEE  " + scoreHolder.currentScore.toString());
                 int scor = scoreHolder.currentScore;
                 scoreHolder.currentScore = 0;
                 Navigator.push(context, MaterialPageRoute(builder: (context) => Scor(scor)));
               }
-
-              // if (!answerWasSelected) {
-              //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              //     content: Text('Please select an answer before going to the next question'),
-              //   ));
-              //   return;
-              // }
-              // _nextQuestion();
             },
             child: Text('Next Question'),
           ),
