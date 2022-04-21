@@ -1,5 +1,5 @@
 name: lsapp
-description: Group project.
+description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -29,13 +29,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  camera:
+  flutter_tts: ^3.2.2
+  tflite: ^1.1.2
+  translator: ^0.1.7
   path_provider:
   path:
-  tflite_flutter: ^0.9.0
-  image_picker: ^0.8.3+2
-  tflite_flutter_helper: ^0.3.0
   sqflite:
+  image_picker: ^0.8.4+4
+  image:
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -64,17 +66,15 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/
+    - assets/labelmap4.txt
+    - assets/mobilenet.tflite
+    - lib/images/
+    - lib/images/english.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
-  assets:
-     - assets/labelmap.txt
-     - assets/detect.tflite
-     - assets/labels.txt
-     - assets/mobilenet.tflite
-     - assets/labelmap3.txt
-     - assets/lite-model3.tflite
-     - lib/images/
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

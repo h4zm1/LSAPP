@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'first.dart';
+// import 'package:space_learn/objects_detection.dart';
+
+import 'home.dart';
+import 'objects_detection.dart';
 
 class LearMenu extends StatelessWidget {
   const LearMenu({Key? key}) : super(key: key);
@@ -106,7 +109,12 @@ class LearMenu extends StatelessWidget {
                                 )),
                           ),
                         ]),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => StaticImage()),
+                          );
+                        },
                       ),
                       const SizedBox(
                         width: 30,
@@ -256,7 +264,7 @@ class LearMenu extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const First()),
+                        MaterialPageRoute(builder: (context) => const Home()),
                       );
                     },
                   ),

@@ -2,13 +2,12 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:ui';
 
-import 'package:camera/camera.dart';
+// import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:lsapp/DB/dbhelper.dart';
 import 'package:lsapp/DB/picture.dart';
 import 'package:lsapp/first.dart';
-
-import 'camera_screen.dart';
+import 'package:lsapp/objects_detection.dart';
 
 void main() {
   runApp(const MyApp());
@@ -73,14 +72,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _gotoCamView() async {
     log(' gotoCamm ');
-    final cameras = await availableCameras();
-    final firstCamera = cameras.first;
+    // final cameras = await availableCameras();
+    // final firstCamera = cameras.first;
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CameraScreen(
-                camera: firstCamera,
-              )),
+          // builder: (context) => CameraScreen(
+          builder: (context) => StaticImage()
+          // camera: firstCamera,
+          ),
     ); //go to other page
   }
 
