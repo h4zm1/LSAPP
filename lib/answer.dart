@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lsapp/score_holder.dart';
@@ -16,19 +18,18 @@ class _answer extends State<Answer> {
   int x = 1;
   bool click = false;
 
-
-
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: !click ? widget.answerTap : null,
       onTapDown: (TapDownDetails details) {
         setState(() {
           if (scoreHolder.block == false) {
             //if not blocked
             if (widget.valid == true) {
-              scoreHolder.currentScore = scoreHolder.currentScore + 1;
+              scoreHolder.currentScore = scoreHolder.currentScore + 50;
             }
+            log("SCORE  BLOCK");
             scoreHolder.block = true; //block after finishing
           }
           click = !click;
@@ -36,7 +37,7 @@ class _answer extends State<Answer> {
       },
       child: Container(
         padding: const EdgeInsets.all(10.0),
-        margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 30.0),
+        margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 60.0),
         width: double.infinity,
         decoration: BoxDecoration(
           color: (click == false)
@@ -45,7 +46,7 @@ class _answer extends State<Answer> {
                   ? Colors.green
                   : Colors.red,
           border: Border.all(color: Colors.blue),
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(5.0),
         ),
         child: Text(
           widget.answerText!,

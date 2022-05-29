@@ -1,7 +1,12 @@
+import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lsapp/DB/dbhelper.dart';
+import 'package:lsapp/DB/picture.dart';
 import 'package:lsapp/translation_screen.dart';
 import 'package:tflite/tflite.dart';
 
@@ -17,8 +22,11 @@ class _StaticImageState extends State<StaticImage> {
   List? _recognitions;
   bool? _busy;
   double? _imageWidth, _imageHeight;
-
+  List? picLabels;
+  final databaseRef = FirebaseDatabase.instance.reference();
   final picker = ImagePicker();
+
+  int counter = 0;
 
   // this function loads the model
   loadTfModel() async {
@@ -74,6 +82,14 @@ class _StaticImageState extends State<StaticImage> {
     Color blue = Color.fromRGBO(251, 83, 117, 1);
 
     return _recognitions!.map((re) {
+      // picLabels!.add(re["detectedClass"]);
+      if (re["confidenceInClass"] > 0.50) {
+        log(re["detectedClass"]);
+        log(re["confidenceInClass"].toString());
+      }
+      log("run once");
+
+      ///TODO display the above list with ted lasson pic
       return Container(
         child: Positioned(
             left: re["rect"]["x"] * factorX,
@@ -313,14 +329,27 @@ class _StaticImageState extends State<StaticImage> {
 
   // gets image from gallery and runs detectObject
   Future getImageFromGallery() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print("No image Selected");
-      }
-    });
-    detectObject(_image!);
+    createData();
+    // final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    // setState(() {
+    //   if (pickedFile != null) {
+    //     _image = File(pickedFile.path);
+    //   } else {
+    //     print("No image Selected");
+    //   }
+    // });
+    // detectObject(_image!);
+  }
+
+  void createData() {
+    counter++;
+    databaseRef.child("ftd").set({'name': 'na la' + counter.toString(), 'description': 'testDes'});
+    log("DATTTTTTAAAAAAAAAAAAAAAAAAAAAAAa");
+  }
+
+  void push2DataBase(String label, Uint8List image) {
+    Picture pic = Picture(label, image);
+    var dbHelper = DBHelper();
+    // dbHelper.savePicture(pic);
   }
 }

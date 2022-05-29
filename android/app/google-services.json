@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "564470833703",
+    "firebase_url": "https://lsapp-955f7-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "lsapp-955f7",
+    "storage_bucket": "lsapp-955f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564470833703:android:0bf10935bfda9bc6f02402",
+        "android_client_info": {
+          "package_name": "com.example.lsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "564470833703-1rc1n8epikcadi0433qo7l0a1ndc8kos.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYTc9_pChnT_OUVnMq0iWBWRJZOO4O5I8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "564470833703-1rc1n8epikcadi0433qo7l0a1ndc8kos.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

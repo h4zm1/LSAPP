@@ -31,13 +31,16 @@ dependencies:
     sdk: flutter
   flutter_tts: ^3.2.2
   tflite: ^1.1.2
-  translator: ^0.1.7
+  translator: ^0.1.2
   path_provider:
   path:
   sqflite:
-  image_picker: ^0.8.4+4
+  image_picker: ^0.6.7+4
   image:
-
+  firebase_core: ^0.4.4+3
+  firebase_database: ^3.1.6
+  uuid: 3.0.6
+  firebase_storage: ^3.0.8
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -68,10 +71,34 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
-    - assets/labelmap4.txt
-    - assets/mobilenet.tflite
-    - lib/images/
-    - lib/images/english.png
+    - assets/bg.png
+    - assets/Space_learn.png
+    - assets/start.png
+    - assets/blueBack.png
+    - assets/detectionImage.png
+    - assets/detectionText.png
+    - assets/quizImage.png
+    - assets/quizText.png
+    - assets/back.png
+    - assets/elien.png
+    - assets/barButton.png
+    - assets/coins.png
+    - assets/backArrow.png
+    - assets/pleaseText.png
+    - assets/cam.png
+    - assets/gallery.png
+    - assets/close.png
+    - assets/play.png
+    - assets/arabe.png
+    - assets/eng.png
+    - assets/frc.png
+    - assets/blue.png
+    - assets/stylo.png
+    - assets/get.png
+    - assets/next.png
+    - assets/stars.png
+    - assets/models/ssd_mobilenet.tflite
+    - assets/models/labels.txt
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
